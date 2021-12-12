@@ -50,6 +50,8 @@ namespace LinqEx1
         public string Genre;
         [Column(Name = "YearPublished")]
         public uint YearPublished;
+        [Column(Name = "Publisher")]
+        public string Publisher;
     }
 
     [Table]
