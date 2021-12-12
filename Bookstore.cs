@@ -55,6 +55,8 @@ namespace LinqEx1
     [Table]
     class Inventory
     {
+        [Column(Name = "ID")]
+        public uint ID;
         [Column(Name = "ISBN")]
         public ulong ISBN;
         [Column(Name = "CopyNumber")]
@@ -66,6 +68,8 @@ namespace LinqEx1
     [Table]
     class Prices
     {
+        [Column(Name = "ID")]
+        public uint ID;
         [Column(Name = "ISBN")]
         public ulong ISBN;
         [Column(Name = "Condition")]
@@ -79,6 +83,8 @@ namespace LinqEx1
     [Table]
     class Sales
     {
+        [Column(Name = "ID")]
+        public uint ID;
         [Column(Name = "CustomerID")]
         public uint CustomerID;
         [Column(Name = "EmployeeID")]
@@ -94,6 +100,8 @@ namespace LinqEx1
     [Table]
     class Rentals
     {
+        [Column(Name = "ID")]
+        public uint ID;
         [Column(Name = "CustomerID")]
         public uint CustomerID;
         [Column(Name = "EmployeeID")]
@@ -113,6 +121,8 @@ namespace LinqEx1
     [Table]
     class Purchases
     {
+        [Column(Name = "ID")]
+        public uint ID;
         [Column(Name = "CustomerID")]
         public uint CustomerID;
         [Column(Name = "EmployeeID")]
