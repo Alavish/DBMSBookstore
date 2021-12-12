@@ -208,7 +208,7 @@ namespace LinqEx1
             var DPCount = discontinuedProducts.Count();
 
             Console.WriteLine("Query03:");
-            Console.WriteLine(DPCount + " products are currently discontinued.");
+            Console.WriteLine(DPCount + " products are currently discontinued."); 
         }
 
         static void Query04()
