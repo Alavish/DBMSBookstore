@@ -1,0 +1,6 @@
+E:\FinalProject\LINQ\LINQ\LinqEx1\bin\Debug\LinqEx1.exe
+E:\FinalProject\LINQ\LINQ\LinqEx1\bin\Debug\LinqEx1.pdb
+E:\FinalProject\LINQ\LINQ\LinqEx1\obj\Debug\LinqEx1.csprojAssemblyReference.cache
+E:\FinalProject\LINQ\LINQ\LinqEx1\obj\Debug\LinqEx1.csproj.CoreCompileInputs.cache
+E:\FinalProject\LINQ\LINQ\LinqEx1\obj\Debug\LinqEx1.exe
+E:\FinalProject\LINQ\LINQ\LinqEx1\obj\Debug\LinqEx1.pdb
