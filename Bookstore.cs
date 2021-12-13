@@ -15,26 +15,26 @@ namespace LinqEx1
     class Customers
     {
         [Column(Name = "ID")]
-        public uint ID;
+        public int ID;
         [Column(Name = "Name")]
         public string ProductName;
         [Column(Name = "ContactInfo")]
         public string ContactInfo;
         [Column(Name = "YearJoined")]
-        public uint YearJoined;
+        public int YearJoined;
     }
 
     [Table]
     class Employees
     {
         [Column(Name = "ID")]
-        public uint ID;
+        public int ID;
         [Column(Name = "Name")]
         public string ProductName;
         [Column(Name = "ContactInfo")]
         public string ContactInfo;
         [Column(Name = "YearJoined")]
-        public uint YearJoined;
+        public int YearJoined;
     }
 
     [Table]
