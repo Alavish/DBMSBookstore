@@ -41,7 +41,7 @@ namespace LinqEx1
     class Books
     {
         [Column(Name = "ISBN")]
-        public ulong ISBN;
+        public int ISBN;
         [Column(Name = "Title")]
         public string Title;
         [Column(Name = "Author")]
@@ -49,7 +49,7 @@ namespace LinqEx1
         [Column(Name = "Genre")]
         public string Genre;
         [Column(Name = "YearPublished")]
-        public uint YearPublished;
+        public int YearPublished;
         [Column(Name = "Publisher")]
         public string Publisher;
     }
@@ -58,11 +58,11 @@ namespace LinqEx1
     class Inventory
     {
         [Column(Name = "ID")]
-        public uint ID;
+        public int ID;
         [Column(Name = "ISBN")]
-        public ulong ISBN;
+        public int ISBN;
         [Column(Name = "CopyNumber")]
-        public uint CopyNumber;
+        public int CopyNumber;
         [Column(Name = "Condition")]
         public string Condition;
     }
@@ -71,9 +71,9 @@ namespace LinqEx1
     class Prices
     {
         [Column(Name = "ID")]
-        public uint ID;
+        public int ID;
         [Column(Name = "ISBN")]
-        public ulong ISBN;
+        public int ISBN;
         [Column(Name = "Condition")]
         public string Condition;
         [Column(Name = "PurchasePrice")]
@@ -86,15 +86,15 @@ namespace LinqEx1
     class Sales
     {
         [Column(Name = "ID")]
-        public uint ID;
+        public int ID;
         [Column(Name = "CustomerID")]
-        public uint CustomerID;
+        public int CustomerID;
         [Column(Name = "EmployeeID")]
-        public uint EmployeeID;
+        public int EmployeeID;
         [Column(Name = "Date_Time")]
         public DateTime Date_Time;
         [Column(Name = "InventoryID")]
-        public uint InventoryID;
+        public int InventoryID;
         [Column(Name = "Discount")]
         public bool Discount;
     }
@@ -103,15 +103,15 @@ namespace LinqEx1
     class Rentals
     {
         [Column(Name = "ID")]
-        public uint ID;
+        public int ID;
         [Column(Name = "CustomerID")]
-        public uint CustomerID;
+        public int CustomerID;
         [Column(Name = "EmployeeID")]
-        public uint EmployeeID;
+        public int EmployeeID;
         [Column(Name = "Date_Time")]
         public DateTime Date_Time;
         [Column(Name = "InventoryID")]
-        public uint InventoryID;
+        public int InventoryID;
         [Column(Name = "DateDue")]
         public DateTime DateDue;
         [Column(Name = "DateReturned")]
@@ -124,15 +124,15 @@ namespace LinqEx1
     class Purchases
     {
         [Column(Name = "ID")]
-        public uint ID;
+        public int ID;
         [Column(Name = "CustomerID")]
-        public uint CustomerID;
+        public int CustomerID;
         [Column(Name = "EmployeeID")]
-        public uint EmployeeID;
+        public int EmployeeID;
         [Column(Name = "Date_Time")]
         public DateTime Date_Time;
         [Column(Name = "ISBN")]
-        public ulong ISBN;
+        public int ISBN;
         [Column(Name = "Condition")]
         public string Condition;
     }
