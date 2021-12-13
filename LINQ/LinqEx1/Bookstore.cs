@@ -51,7 +51,7 @@ namespace LinqEx1
         [Column(Name = "YearPublished")]
         public int YearPublished;
         [Column(Name = "Publisher")]
-        public string Publisher;
+        public string Publisher; // done
     }
 
     [Table]
