@@ -152,28 +152,32 @@ namespace LinqEx1
     class Bookstore
     {
         static void Query01()
-        // List the results of giving a 10% increase to the list price of all products.
+        // On initial Start of the Program new Book <in the top 10 range> are sh.
         {
             BookstoreDB bsdb = new BookstoreDB();
 
-            var prices = from product in bsdb.Products
-                         select new { ProductName = product.ProductName, OldUnitPrice = product.UnitPrice, NewUnitPrice = product.UnitPrice * 1.1m };
+            var homescreen = from Books in bsdb.Products
+                         select new { Bk_ID = Books.ISBN, Bk_title = Books.Title, Author = Books.Author, Genre = Books.Genre, Year = Books.YearPublished, Publisher = Books.Publisher };
 
             NumberFormatInfo setPrecision = new NumberFormatInfo();
 
             setPrecision.NumberDecimalDigits = 2;
 
-            Console.WriteLine("Query01:");
+            Console.WriteLine("Query01:");  // Write UI manipulated code from source.
 
-            foreach (var p in prices)
+            foreach (var p in homescreen)
             {
-                Console.Write("Product: " + p.ProductName);
-                Console.Write(", Old Unit Price: $" + p.OldUnitPrice.ToString("N", setPrecision));
-                Console.Write(", New Unit Price: $" + p.NewUnitPrice.ToString("N", setPrecision));
+                Console.Write("ID: " + p.Bk_ID);
+                Console.Write(", Title " + p.Bk_title);
+                Console.Write(", Author" + p.Author);
+                Console.Write(", Genre" + p.Genre);
+                Console.Write(", Year" + p.Year);
+                Console.Write(", Publisher" + p.Publisher);
                 Console.Write('\n');
             }
         }
 
+        /*
         static void Query02()
         // List the maximum, minimum, and average target level of the products.
         // ***NOTE: I'm working in SQL Server, in which the Product table does not have the Target Level attribute.
@@ -350,7 +354,7 @@ namespace LinqEx1
                 Console.Write(", Avg. Price: $" + c.avgPrice.ToString("N", setPrecision));
                 Console.Write('\n');
             }
-        }
+        } */
 
         static void selection()
         {
