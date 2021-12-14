@@ -17,7 +17,7 @@ namespace LinqEx1
         [Column(Name = "ID")]
         public int ID;
         [Column(Name = "Name")]
-        public string ProductName;
+        public string Name;
         [Column(Name = "ContactInfo")]
         public string ContactInfo;
         [Column(Name = "YearJoined")]
@@ -30,7 +30,7 @@ namespace LinqEx1
         [Column(Name = "ID")]
         public int ID;
         [Column(Name = "Name")]
-        public string ProductName;
+        public string Name;
         [Column(Name = "ContactInfo")]
         public string ContactInfo;
         [Column(Name = "YearJoined")]
@@ -80,6 +80,8 @@ namespace LinqEx1
         public decimal PurchasePrice;
         [Column(Name = "RentalPrice")]
         public decimal RentalPrice;
+        [Column(Name = "LateFee")]
+        public decimal LateFee;
     }
 
     [Table]
