@@ -9,32 +9,33 @@ using System.Data.Linq.Mapping;
 using System.Text;
 using System.Globalization;
 
+
 namespace LinqEx1
 {
     [Table]
     class Customers
     {
         [Column(Name = "ID")]
-        public uint ID;
+        public int ID;
         [Column(Name = "Name")]
-        public string ProductName;
+        public string Name;
         [Column(Name = "ContactInfo")]
         public string ContactInfo;
         [Column(Name = "YearJoined")]
-        public uint YearJoined;
+        public int YearJoined;
     }
 
     [Table]
     class Employees
     {
         [Column(Name = "ID")]
-        public uint ID;
+        public int ID;
         [Column(Name = "Name")]
         public string ProductName;
         [Column(Name = "ContactInfo")]
         public string ContactInfo;
         [Column(Name = "YearJoined")]
-        public uint YearJoined;
+        public int YearJoined;
     }
 
     [Table]
@@ -58,11 +59,11 @@ namespace LinqEx1
     class Inventory
     {
         [Column(Name = "ID")]
-        public uint ID;
+        public int ID;
         [Column(Name = "ISBN")]
-        public ulong ISBN;
+        public long ISBN;
         [Column(Name = "CopyNumber")]
-        public uint CopyNumber;
+        public int CopyNumber;
         [Column(Name = "Condition")]
         public string Condition;
     }
@@ -71,30 +72,32 @@ namespace LinqEx1
     class Prices
     {
         [Column(Name = "ID")]
-        public uint ID;
+        public int ID;
         [Column(Name = "ISBN")]
-        public ulong ISBN;
+        public long ISBN;
         [Column(Name = "Condition")]
         public string Condition;
         [Column(Name = "PurchasePrice")]
         public decimal PurchasePrice;
         [Column(Name = "RentalPrice")]
         public decimal RentalPrice;
+        [Column(Name = "LateFee")]
+        public decimal latefee;
     }
 
     [Table]
     class Sales
     {
         [Column(Name = "ID")]
-        public uint ID;
+        public int ID;
         [Column(Name = "CustomerID")]
-        public uint CustomerID;
+        public int CustomerID;
         [Column(Name = "EmployeeID")]
-        public uint EmployeeID;
+        public int EmployeeID;
         [Column(Name = "Date_Time")]
         public DateTime Date_Time;
         [Column(Name = "InventoryID")]
-        public uint InventoryID;
+        public int InventoryID;
         [Column(Name = "Discount")]
         public bool Discount;
     }
@@ -103,39 +106,41 @@ namespace LinqEx1
     class Rentals
     {
         [Column(Name = "ID")]
-        public uint ID;
+        public int ID;
         [Column(Name = "CustomerID")]
-        public uint CustomerID;
+        public int CustomerID;
         [Column(Name = "EmployeeID")]
-        public uint EmployeeID;
+        public int EmployeeID;
         [Column(Name = "Date_Time")]
         public DateTime Date_Time;
         [Column(Name = "InventoryID")]
-        public uint InventoryID;
+        public int InventoryID;
         [Column(Name = "DateDue")]
         public DateTime DateDue;
         [Column(Name = "DateReturned")]
         public DateTime DateReturned;
         [Column(Name = "Discount")]
         public bool Discount;
+
     }
 
     [Table]
     class Purchases
     {
         [Column(Name = "ID")]
-        public uint ID;
+        public int ID;
         [Column(Name = "CustomerID")]
-        public uint CustomerID;
+        public int CustomerID;
         [Column(Name = "EmployeeID")]
-        public uint EmployeeID;
+        public int EmployeeID;
         [Column(Name = "Date_Time")]
         public DateTime Date_Time;
         [Column(Name = "ISBN")]
-        public ulong ISBN;
+        public long ISBN;
         [Column(Name = "Condition")]
         public string Condition;
     }
+
 
     class BookstoreDB : DataContext
     {
@@ -149,11 +154,13 @@ namespace LinqEx1
         public Table<Purchases> Purchases;
 
         public BookstoreDB() : base(@"Data Source=CS1;Initial Catalog=bookstore;Integrated Security=True") { }
-    }
+    } 
+
+  
 
     class Bookstore
     {
-        static void Query01()
+        static void homescreen()
         // On initial Start of the Program new Book <in the top 10 range> are sh.
         {
             BookstoreDB bsdb = new BookstoreDB();
@@ -177,31 +184,43 @@ namespace LinqEx1
                 Console.Write(", Publisher" + p.Publisher);
                 Console.Write('\n');
             }
+        } 
+
+        
+        static void Query02() { 
+        // This Query is used to check if a customer exists in the database. 
+        // if not then a customer is created into the database. 
+
+        BookstoreDB bsdb = new BookstoreDB(); // db object for reading the database.
+
+        Console.WriteLine("Hello, Enter your ID");
+
+        int userID = Convert.ToInt32(Console.ReadLine()); // read user input. 
+
+        // Get The Customers data from the server. 
+
+
+         var homescreen = from Customers in bsdb.Customers
+                        select new { Customer_ID = Customers.ID, Cs_name = Customers.Name, info = Customers.ContactInfo, year = Customers.YearJoined };
+
+
+            foreach( var p in homescreen )
+            {
+
+                if ( p.Customer_ID == userID) // when the customer exists in the
+                {
+                   //Console.Write(" Foo"); 
+
+                   // store it in memory in an encapsulation 
+
+
+
+                }
+            }
         }
+
 
         /*
-        static void Query02()
-        // List the maximum, minimum, and average target level of the products.
-        // ***NOTE: I'm working in SQL Server, in which the Product table does not have the Target Level attribute.
-        //          Instead, I'll use the Reorder Level.
-        {
-            BookstoreDB bsdb = new BookstoreDB();
-
-            var maxReorderLevel = bsdb.Products.Max(p => p.ReorderLevel);
-
-            var minReorderLevel = bsdb.Products.Min(p => p.ReorderLevel);
-
-            var avgReorderLevel = bsdb.Products.Average(p => p.ReorderLevel);
-
-            Console.WriteLine("Query02:");
-
-            Console.WriteLine("Max. Reorder Level: " + maxReorderLevel);
-
-            Console.WriteLine("Min. Reorder Level: " + minReorderLevel);
-
-            Console.WriteLine("Avg. Reorder Level: " + avgReorderLevel);
-        }
-
         static void Query03()
         // How many products are currently discontinued?
         {
@@ -356,21 +375,23 @@ namespace LinqEx1
                 Console.Write(", Avg. Price: $" + c.avgPrice.ToString("N", setPrecision));
                 Console.Write('\n');
             }
-        } */
-
+        } 
+        */
         static void selection()
         {
+
+     
             Console.WriteLine("Enter a number between 1 and 10 to view the solution:");
             int in1 = Convert.ToInt32(Console.ReadLine());
             switch (in1)
             {
                 case 1:
-                    Query01();
+                    homescreen();
                     break;
-               /* case 2:
+                case 2:
                     Query02();
                     break;
-                case 3:
+               /* case 3:
                     Query03();
                     break;
                 case 4:
