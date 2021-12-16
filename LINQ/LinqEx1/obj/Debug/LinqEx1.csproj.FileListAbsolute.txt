@@ -10,3 +10,14 @@ C:\Users\namoah23\Desktop\bookstore\LINQ\LinqEx1\bin\Debug\LinqEx1.exe
 C:\Users\namoah23\Desktop\bookstore\LINQ\LinqEx1\bin\Debug\LinqEx1.pdb
 C:\Users\namoah23\Desktop\bookstore\LINQ\LinqEx1\obj\Debug\LinqEx1.exe
 C:\Users\namoah23\Desktop\bookstore\LINQ\LinqEx1\obj\Debug\LinqEx1.pdb
+E:\FinalProject\Git\LINQ\LinqEx1\obj\Debug\LinqEx1.csprojAssemblyReference.cache
+E:\FinalProject\Git\LINQ\LinqEx1\obj\Debug\LinqEx1.csproj.CoreCompileInputs.cache
+E:\FinalProject\Git\LINQ\LinqEx1\obj\Debug\LinqEx1.exe
+E:\FinalProject\Git\LINQ\LinqEx1\obj\Debug\LinqEx1.pdb
+E:\FinalProject\Git\LINQ\LinqEx1\bin\Debug\LinqEx1.exe
+E:\FinalProject\Git\LINQ\LinqEx1\bin\Debug\LinqEx1.pdb
+C:\Users\namoah23\Desktop\Db\bookstore\LINQ\LinqEx1\bin\Debug\LinqEx1.exe
+C:\Users\namoah23\Desktop\Db\bookstore\LINQ\LinqEx1\bin\Debug\LinqEx1.pdb
+C:\Users\namoah23\Desktop\Db\bookstore\LINQ\LinqEx1\obj\Debug\LinqEx1.csproj.CoreCompileInputs.cache
+C:\Users\namoah23\Desktop\Db\bookstore\LINQ\LinqEx1\obj\Debug\LinqEx1.exe
+C:\Users\namoah23\Desktop\Db\bookstore\LINQ\LinqEx1\obj\Debug\LinqEx1.pdb
