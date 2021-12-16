@@ -153,21 +153,46 @@ class BookstoreDB : DataContext
 
 class Bookstore
 {
+    static IQueryable getBookstoreDB(BookstoreDB bsdb)
+    {
+        var db = from book in bsdb.Books
+                 join item in bsdb.Inventory on book.ISBN equals item.ISBN 
+                 join row in bsdb.Prices on 
+                 new { book.ISBN, item.Condition }
+                 equals new { row.ISBN, row.Condition }
+                 select new { Title = book.Title,
+                              Author = book.Author,
+                              Genre = book.Genre, Year = book.YearPublished,
+                              Condition = item.Condition,
+                              PurchasePrice = row.PurchasePrice,
+                              RentalPrice = row.RentalPrice };
+        return db;
+    }
+
     static void Startup(BookstoreDB bsdb)
     // On initial Start of the Program new Book  are sh.
     {
-        var selection = from book in bsdb.Books
-                        select book;
+        var db = from book in bsdb.Books
+                 join item in bsdb.Inventory on book.ISBN equals item.ISBN
+                 join row in bsdb.Prices on
+                 new { book.ISBN, item.Condition }
+                 equals new { row.ISBN, row.Condition }
+                 select new { Title = book.Title,
+                              Author = book.Author,
+                              Genre = book.Genre, Year = book.YearPublished,
+                              Condition = item.Condition,
+                              PurchasePrice = row.PurchasePrice,
+                              RentalPrice = row.RentalPrice };
 
         NumberFormatInfo setPrecision = new NumberFormatInfo();
 
         setPrecision.NumberDecimalDigits = 2;
 
         Console.WriteLine("Startup:");  // Write UI manipulated code from source.
-        Console.WriteLine("Title\tAuthor\tYear\tGenre");
-        foreach (var book in selection)
+        Console.WriteLine("Title\tAuthor\tGenre\tYear\tCondition\tPurchasePrice\tRentalPrice");
+        foreach (var book in db) // typecast error here? not sure which is being cast as which
         {
-            Console.WriteLine(book.Title + "\t" + book.Author + "\t" + book.YearPublished + "\t" + book.Genre);
+            Console.WriteLine(book.Title + "\t" + book.Author + "\t" + book.Genre + "\t" + book.Year + "\t" + book.Condition + "\t" + book.PurchasePrice + "\t" + book.RentalPrice);
         }
     }
     /*
@@ -394,83 +419,121 @@ class Bookstore
     static void Main(string[] args)
     {
         BookstoreDB bsdb = new BookstoreDB();
+        IQueryable inventory = getBookstoreDB(bsdb);
         // TODO: Login procedure
         Startup(bsdb);
         string input = null;
-        do {
+        do
+        {
+            startup:    
             if (input == null) // Initial loop on login
             {
-                Console.WriteLine("Enter 's' to search by attribute(s). Enter 't' to make a transaction. Enter nothing to log out.");
+                Console.WriteLine("Enter 's' to sort by attribute. Enter 't' to make a transaction. Enter nothing to log out.");
             }
             else if (input == "s" || input == "S")
             {
                 Console.WriteLine("Enter 't' to sort by Title. Enter 'a' to sort by Author. Enter 'y' to sort by Year. Enter 'g' to sort by Genre. Enter nothing to log out.");
                 sorting:
                 input = Console.ReadLine();
-                    if (input == "t" || input == "T")
+                if (input == "t" || input == "T")
+                {
+                    var db = from book in bsdb.Books
+                           orderby book.Title
+                           select book;
+                    Console.WriteLine("Title\tAuthor\tYear\tGenre");
+                    foreach (var book in db)
                     {
-                        // TODO: sort Inventory by Title; prompt user input; break;
+                        Console.WriteLine(book.Title + "\t" + book.Author + "\t" + book.YearPublished + "\t" + book.Genre);
                     }
-                    else if (input == "a" || input == "A")
+                    input = null;
+                    goto startup;
+                }
+                else if (input == "a" || input == "A")
+                {
+                    var db = from book in bsdb.Books
+                           orderby book.Author
+                           select book;
+                    Console.WriteLine("Title\tAuthor\tYear\tGenre");
+                    foreach (var book in db)
                     {
-                        // TODO: sort Inventory by Author; prompt user input; break;
+                        Console.WriteLine(book.Title + "\t" + book.Author + "\t" + book.YearPublished + "\t" + book.Genre);
                     }
-                    else if (input == "y" || input == "Y")
+                    input = null;
+                    goto startup;
+                }
+                else if (input == "y" || input == "Y")
+                {
+                    var db = from book in bsdb.Books
+                           orderby book.YearPublished
+                           select book;
+                    Console.WriteLine("Title\tAuthor\tYear\tGenre");
+                    foreach (var book in db)
                     {
-                        // TODO: sort Inventory by YearPublished; prompt user input; break;
+                        Console.WriteLine(book.Title + "\t" + book.Author + "\t" + book.YearPublished + "\t" + book.Genre);
                     }
-                    else if (input == "g" || input == "G")
+                    input = null;
+                    goto startup;
+                }
+                else if (input == "g" || input == "G")
+                {
+                    var db = from book in bsdb.Books
+                           orderby book.Genre
+                           select book;
+                    Console.WriteLine("Title\tAuthor\tYear\tGenre");
+                    foreach (var book in db)
                     {
-                        // TODO: sort Inventory by Genre; prompt user input; break;
+                        Console.WriteLine(book.Title + "\t" + book.Author + "\t" + book.YearPublished + "\t" + book.Genre);
                     }
-                    else if (input == "")
-                    {
-                        break; // exit if-cluster and outer do-while
-                    }
-                    else
-                    {
-                        Console.WriteLine("Invalid input. Enter 't' to sort by Title. Enter 'a' to sort by Author. Enter 'y' to sort by Year. Enter 'g' to sort by Genre. Enter nothing to log out.");
-                        goto sorting;
-                    }
+                    input = null;
+                    goto startup;
+                }
+                else if (input == "")
+                {
+                    break; // exit if-cluster and outer do-while
+                }
+                else
+                {
+                    Console.WriteLine("Invalid input. Enter 't' to sort by Title. Enter 'a' to sort by Author. Enter 'y' to sort by Year. Enter 'g' to sort by Genre. Enter nothing to log out.");
+                    goto sorting;
+                }
 
             }
             else if (input == "t" || input == "T")
             {
                 Console.WriteLine("Enter 'p' to reserve a purchase. Enter 'r' to reserve a rental. Enter 's' to offer a sale. Enter nothing to log out.");
                 transaction:
-                    input = Console.ReadLine();
-                    if (input == "p" || input == "P")
-                    {
-                        Console.WriteLine("Enter your selected titles separated by commas:");
+                input = Console.ReadLine();
+                if (input == "p" || input == "P")
+                {
+                    Console.WriteLine("Enter your selected titles separated by commas:");
 
-                        // TODO: ^
-                    }
-                    else if (input == "r" || input == "R")
-                    {
-                        Console.WriteLine("Enter your selected titles separated by commas:");
+                    // TODO: ^
+                }
+                else if (input == "r" || input == "R")
+                {
+                    Console.WriteLine("Enter your selected titles separated by commas:");
 
-                        // TODO: ^
-                    }
-                    else if (input == "s" || input == "S")
-                    {
-                        // TODO: Display user's collection; will probably be empty on login (should we store it clientside in this repo?); prompt if user collection is empty (goto transaction)
-                    }
-                    else if (input == "")
-                    {
-                        break; // exit if-cluster and outer do-while
-                    }
-                    else
-                    {
-                        Console.WriteLine("Invalid input. Enter 'p' to reserve a purchase. Enter 'r' to reserve a rental. Enter 's' to offer a sale. Enter nothing to log out.");
-                        goto transaction;
-                    }
+                    // TODO: ^
+                }
+                else if (input == "s" || input == "S")
+                {
+                    // TODO: Display user's collection; will probably be empty on login (should we store it clientside in main?); prompt if user collection is empty (goto transaction)
+                }
+                else if (input == "")
+                {
+                    break; // exit if-cluster and outer do-while
+                }
+                else
+                {
+                    Console.WriteLine("Invalid input. Enter 'p' to reserve a purchase. Enter 'r' to reserve a rental. Enter 's' to offer a sale. Enter nothing to log out.");
+                    goto transaction;
+                }
             }
             else
             {
-                Console.WriteLine("Invalid input. Enter 's' to sort by attribute(s). Enter 't' to make a transaction. Enter nothing to log out.");
+                Console.WriteLine("Invalid input. Enter 's' to sort by attribute. Enter 't' to make a transaction. Enter nothing to log out.");
             }
             input = Console.ReadLine();
         } while (input != "");
     }
 }
-
