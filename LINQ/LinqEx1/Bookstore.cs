@@ -581,80 +581,7 @@ class Bookstore
         return true; // when done. 
     }
       
-    /*
-   
-    static void Query10(var bsdb)
-    // List each product category, and for each category, list the maximum, minimum, and average prices for products in that category.
-    {
-        BookstoreDB bsdb = new BookstoreDB();
 
-        var catPrices = from product in bsdb.Products
-                        from category in bsdb.Categories
-                        where product.CategoryID == category.CategoryID
-                        select new { category = category.CategoryName, unitPrice = product.UnitPrice };
-
-        var catStats = from item in catPrices
-                        group item by item.category into cats
-                        select new { category = cats.Key, maxPrice = cats.Max(p => p.unitPrice), minPrice = cats.Min(p => p.unitPrice), avgPrice = cats.Average(p => p.unitPrice) };
-
-        NumberFormatInfo setPrecision = new NumberFormatInfo();
-
-        setPrecision.NumberDecimalDigits = 2;
-
-        Console.WriteLine("Query10:");
-
-        foreach (var c in catStats)
-        {
-            Console.Write("Category: " + c.category);
-            Console.Write(", Max. Price: $" + c.maxPrice.ToString("N", setPrecision));
-            Console.Write(", Min. Price: $" + c.minPrice.ToString("N", setPrecision));
-            Console.Write(", Avg. Price: $" + c.avgPrice.ToString("N", setPrecision));
-            Console.Write('\n');
-        }
-    }
-
-    static void selection(var bsdb)
-    {
-        Console.WriteLine("Enter a number between 1 and 10 to view the solution:");
-        int in1 = Convert.ToInt32(Console.ReadLine());
-        switch (in1)
-        {
-            case 1:
-                Query01();
-                break;
-            case 2:
-                Query02();
-                break;
-            case 3:
-                Query03();
-                break;
-            case 4:
-                Query04();
-                break;
-            case 5:
-                Query05();
-                break;
-            case 6:
-                Query06();
-                break;
-            case 7:
-                Query07();
-                break;
-            case 8:
-                Query08();
-                break;
-            case 9:
-                Query09();
-                break;
-            case 10:
-                Query10();
-                break;
-            default:
-                selection();
-                break;
-        }
-    }
-    */
 
     /**
      * @description Get an Employee from the user by specifying the ID. 
@@ -765,7 +692,7 @@ class Bookstore
                 break;
 
             case 2:
-                rentABook(bsdb, cs, worker);
+                rentABook(bsdb, cs, worker); // call it when you want to rent book
                 break;
             default:
                 Console.WriteLine("No input selected");
