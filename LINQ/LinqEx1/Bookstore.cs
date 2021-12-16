@@ -193,7 +193,7 @@ class Bookstore
         Console.WriteLine("Avg. Reorder Level: " + avgReorderLevel);
     }
 
-    static void Query03(var bsdb)
+    static void Query03(var bsdb) ///
     // How many products are currently discontinued?
     {
         BookstoreDB bsdb = new BookstoreDB();
