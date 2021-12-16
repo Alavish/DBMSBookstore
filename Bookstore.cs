@@ -153,19 +153,37 @@ class BookstoreDB : DataContext
 
 class Bookstore
 {
+    static void sort(BookstoreDB bsdb)
+    {
+        bsdb = from book in bsdb.Inventory
+               orderby book.Title
+               select book;
+        Console.WriteLine("Title\tAuthor\tYear\tGenre");
+        foreach (var book in bsdb.books)
+        {
+            Console.WriteLine(book.Title + "\t" + book.Author + "\t" + book.YearPublished + "\t" + book.Genre);
+        }
+    }
+    static BookstoreDB getBookstoreDB(BookstoreDB bsdb)
+    {
+        var db = from book in bsdb.Books
+                 join item in bsdb.Inventory on book.ISBN equals item.ISBN 
+                 join row in bsdb.Prices on 
+                 new { book.ISBN, item.Condition }
+                 equals new { row.ISBN, row.Condition }
+                 select new { Title = book.Title, Author = book.Author, Genre = book.Genre, Year = book.YearPublished, Condition = item.Condition, PurchasePrice = row.PurchasePrice, RentalPrice = row.RentalPrice };
+    }
+
     static void Startup(BookstoreDB bsdb)
     // On initial Start of the Program new Book  are sh.
     {
-        var selection = from book in bsdb.Books
-                        select book;
-
         NumberFormatInfo setPrecision = new NumberFormatInfo();
 
         setPrecision.NumberDecimalDigits = 2;
 
         Console.WriteLine("Startup:");  // Write UI manipulated code from source.
         Console.WriteLine("Title\tAuthor\tYear\tGenre");
-        foreach (var book in selection)
+        foreach (var book in bsdb.books)
         {
             Console.WriteLine(book.Title + "\t" + book.Author + "\t" + book.YearPublished + "\t" + book.Genre);
         }
@@ -395,34 +413,71 @@ class Bookstore
     {
         BookstoreDB bsdb = new BookstoreDB();
         // TODO: Login procedure
-        Startup(bsdb);
+        Startup(getBookstoreDB(bsdb));
         string input = null;
         do
         {
+            startup:    
             if (input == null) // Initial loop on login
             {
-                Console.WriteLine("Enter 's' to search by attribute(s). Enter 't' to make a transaction. Enter nothing to log out.");
+                Console.WriteLine("Enter 's' to sort by attribute. Enter 't' to make a transaction. Enter nothing to log out.");
             }
             else if (input == "s" || input == "S")
             {
                 Console.WriteLine("Enter 't' to sort by Title. Enter 'a' to sort by Author. Enter 'y' to sort by Year. Enter 'g' to sort by Genre. Enter nothing to log out.");
-            sorting:
+                sorting:
                 input = Console.ReadLine();
                 if (input == "t" || input == "T")
                 {
-                    // TODO: sort Inventory by Title; prompt user input; break;
+                    bsdb = from book in bsdb.Books
+                           orderby book.Title
+                           select book;
+                    Console.WriteLine("Title\tAuthor\tYear\tGenre");
+                    foreach (var book in bsdb.books)
+                    {
+                        Console.WriteLine(book.Title + "\t" + book.Author + "\t" + book.YearPublished + "\t" + book.Genre);
+                    }
+                    input = null;
+                    goto startup;
                 }
                 else if (input == "a" || input == "A")
                 {
-                    // TODO: sort Inventory by Author; prompt user input; break;
+                    bsdb = from book in bsdb.Books
+                           orderby book.Author
+                           select book;
+                    Console.WriteLine("Title\tAuthor\tYear\tGenre");
+                    foreach (var book in bsdb.books)
+                    {
+                        Console.WriteLine(book.Title + "\t" + book.Author + "\t" + book.YearPublished + "\t" + book.Genre);
+                    }
+                    input = null;
+                    goto startup;
                 }
                 else if (input == "y" || input == "Y")
                 {
-                    // TODO: sort Inventory by YearPublished; prompt user input; break;
+                    bsdb = from book in bsdb.Books
+                           orderby book.YearPublished
+                           select book;
+                    Console.WriteLine("Title\tAuthor\tYear\tGenre");
+                    foreach (var book in bsdb.books)
+                    {
+                        Console.WriteLine(book.Title + "\t" + book.Author + "\t" + book.YearPublished + "\t" + book.Genre);
+                    }
+                    input = null;
+                    goto startup;
                 }
                 else if (input == "g" || input == "G")
                 {
-                    // TODO: sort Inventory by Genre; prompt user input; break;
+                    bsdb = from book in bsdb.Books
+                           orderby book.Genre
+                           select book;
+                    Console.WriteLine("Title\tAuthor\tYear\tGenre");
+                    foreach (var book in bsdb.books)
+                    {
+                        Console.WriteLine(book.Title + "\t" + book.Author + "\t" + book.YearPublished + "\t" + book.Genre);
+                    }
+                    input = null;
+                    goto startup;
                 }
                 else if (input == "")
                 {
@@ -438,7 +493,7 @@ class Bookstore
             else if (input == "t" || input == "T")
             {
                 Console.WriteLine("Enter 'p' to reserve a purchase. Enter 'r' to reserve a rental. Enter 's' to offer a sale. Enter nothing to log out.");
-            transaction:
+                transaction:
                 input = Console.ReadLine();
                 if (input == "p" || input == "P")
                 {
@@ -454,7 +509,7 @@ class Bookstore
                 }
                 else if (input == "s" || input == "S")
                 {
-                    // TODO: Display user's collection; will probably be empty on login (should we store it clientside in this repo?); prompt if user collection is empty (goto transaction)
+                    // TODO: Display user's collection; will probably be empty on login (should we store it clientside in main?); prompt if user collection is empty (goto transaction)
                 }
                 else if (input == "")
                 {
@@ -468,7 +523,7 @@ class Bookstore
             }
             else
             {
-                Console.WriteLine("Invalid input. Enter 's' to sort by attribute(s). Enter 't' to make a transaction. Enter nothing to log out.");
+                Console.WriteLine("Invalid input. Enter 's' to sort by attribute. Enter 't' to make a transaction. Enter nothing to log out.");
             }
             input = Console.ReadLine();
         } while (input != "");
