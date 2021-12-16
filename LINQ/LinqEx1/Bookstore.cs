@@ -8,342 +8,581 @@ using System.Data.Linq;
 using System.Data.Linq.Mapping;
 using System.Text;
 using System.Globalization;
+using System.Data;
+using utilities; // operation for more database utilization. 
 
-[Table]
-class Customers
+
+    [Table]
+    public class Customers
+    {
+        [Column(Name = "ID",IsPrimaryKey =true, IsDbGenerated =true,AutoSync =AutoSync.OnInsert, DbType ="INT NOT NULL IDENTITY")]
+        public int ID;
+        [Column(Name = "Name")]
+        public string Name;
+        [Column(Name = "ContactInfo")]
+        public string ContactInfo;
+        [Column(Name = "YearJoined")]
+        public int YearJoined;
+    }
+
+    [Table]
+    class Employees
+    {
+        [Column(Name = "ID", IsPrimaryKey = true, IsDbGenerated = true, AutoSync = AutoSync.OnInsert, DbType = "INT NOT NULL IDENTITY")]
+        public int ID;
+        [Column(Name = "Name")]
+        public string Name;
+        [Column(Name = "ContactInfo")]
+        public string ContactInfo;
+        [Column(Name = "YearJoined")]
+        public int YearJoined;
+    }
+
+    [Table]
+    class Books
+    {
+        [Column(Name = "ISBN", IsPrimaryKey = true, IsDbGenerated = true, AutoSync = AutoSync.OnInsert, DbType = "INT NOT NULL IDENTITY")]
+        public int ISBN;
+        [Column(Name = "Title")]
+        public string Title;
+        [Column(Name = "Author")]
+        public string Author;
+        [Column(Name = "Genre")]
+        public string Genre;
+        [Column(Name = "YearPublished")]
+        public string YearPublished;
+        [Column(Name = "Publisher")]
+        public string Publisher;
+    }
+
+    [Table]
+    class Inventory
+    {
+        [Column(Name = "ID", IsPrimaryKey = true, IsDbGenerated = true, AutoSync = AutoSync.OnInsert, DbType = "INT NOT NULL IDENTITY")]
+        public int ID;
+        [Column(Name = "ISBN")]
+        public int ISBN;
+        [Column(Name = "CopyNumber")]
+        public int CopyNumber;
+        [Column(Name = "Condition")]
+        public string Condition;
+    }
+
+    [Table]
+    class Prices
+    {
+        [Column(Name = "ID", IsPrimaryKey = true, IsDbGenerated = true, AutoSync = AutoSync.OnInsert, DbType = "INT NOT NULL IDENTITY")]
+        public int ID;
+        [Column(Name = "ISBN")]
+        public int ISBN;
+        [Column(Name = "Condition")]
+        public string Condition;
+        [Column(Name = "PurchasePrice")]
+        public decimal PurchasePrice;
+        [Column(Name = "RentalPrice")]
+        public decimal RentalPrice;
+        [Column(Name = "LateFee")]
+        public decimal LateFee;
+    }
+
+    [Table]
+    class Sales
+    {
+        [Column(Name = "ID", IsPrimaryKey = true, IsDbGenerated = true, AutoSync = AutoSync.OnInsert, DbType = "INT NOT NULL IDENTITY")]
+        public int ID;
+        [Column(Name = "CustomerID")]
+        public int CustomerID;
+        [Column(Name = "EmployeeID")]
+        public int EmployeeID;
+        [Column(Name = "Date_Time")]
+        public DateTime Date_Time;
+        [Column(Name = "InventoryID")]
+        public int InventoryID;
+        [Column(Name = "Discount")]
+        public bool Discount;
+    }
+
+    [Table]
+    class Rentals
+    {
+        [Column(Name = "ID", IsPrimaryKey = true, IsDbGenerated = true, AutoSync = AutoSync.OnInsert, DbType = "INT NOT NULL IDENTITY")]
+        public int ID;
+        [Column(Name = "CustomerID")]
+        public int CustomerID;
+        [Column(Name = "EmployeeID")]
+        public int EmployeeID;
+        [Column(Name = "Date_Time")]
+        public DateTime Date_Time;
+        [Column(Name = "InventoryID")]
+        public int InventoryID;
+        [Column(Name = "DateDue")]
+        public DateTime DateDue;
+        [Column(Name = "DateReturned")]
+        public DateTime DateReturned;
+        [Column(Name = "Discount")]
+        public bool Discount;
+    }
+
+    [Table]
+    class Purchases
+    {
+        [Column(Name = "ID", IsPrimaryKey = true, IsDbGenerated = true, AutoSync = AutoSync.OnInsert, DbType = "INT NOT NULL IDENTITY")]
+        public int ID;
+        [Column(Name = "CustomerID")]
+        public int CustomerID;
+        [Column(Name = "EmployeeID")]
+        public int EmployeeID;
+        [Column(Name = "Date_Time")]
+        public DateTime Date_Time;
+        [Column(Name = "ISBN")]
+        public int ISBN;
+        [Column(Name = "Condition")]
+        public string Condition;
+    }
+
+
+
+    class BookstoreDB : DataContext
+    {
+        public Table<Customers> Customers;
+        public Table<Employees> Employees;
+        public Table<Books> Books;
+        public Table<Inventory> Inventory;
+        public Table<Prices> Prices;
+        public Table<Sales> Sales;
+        public Table<Rentals> Rentals;
+        public Table<Purchases> Purchases;
+
+        public BookstoreDB() : base(@"Data Source=CS1;Initial Catalog=bookstore;Integrated Security=True") { }
+    }
+
+
+/**
+ * @description This Class handles the insertion operations from the queries. 
+ * @citation https://docs.microsoft.com/en-us/dotnet/framework/data/adonet/sql/linq/how-to-insert-rows-into-the-database
+ */
+class Utility
 {
-    [Column(Name = "ID")]
-    public int ID;
-    [Column(Name = "Name")]
-    public string Name;
-    [Column(Name = "ContactInfo")]
-    public string ContactInfo;
-    [Column(Name = "YearJoined")]
-    public int YearJoined;
+
+    public BookstoreDB data_base; 
+    public Utility() { } // Constructor.
+
+
+    /**
+     * @description Inserts Customers Records to the Database.
+     * @param Customers type to be inserted to the table. 
+     * @return true when successful. 
+     */
+    public bool InsertCustomer(Customers user )
+    {
+        data_base = new BookstoreDB(); // API to comm with the server. 
+
+        // Add the new object to the Customers collection. 
+        data_base.Customers.InsertOnSubmit(user);
+
+
+        // Submit the Changes to the database. 
+        try
+        {
+            data_base.SubmitChanges();
+            return true; 
+        } catch (Exception e)
+        {
+            Console.WriteLine(e); 
+        }
+
+        return false; // not successful. 
+
+    }
+
+    /**
+ * @description Inserts Employees Records to the Database.
+ * @param Employees type to be inserted to the table. 
+ * @return true when successful. 
+ */
+    public bool InsertEmployees(Employees work)
+    {
+        data_base = new BookstoreDB(); // API to comm with the server. 
+
+        // Add the new object to the Customers collection. 
+        data_base.Employees.InsertOnSubmit(work);
+
+
+        // Submit the Changes to the database. 
+        try
+        {
+            data_base.SubmitChanges();
+            return true;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+
+        return false; // not successful. 
+
+    }
+
+    /**
+     * @description Inserts Transactions into purchases of the user. 
+     * @param Purchase tuple of transaction
+     * @return true when insertion completed.
+     * 
+     */
+    public bool InsertPurchases(Purchases transact)
+    {
+
+        data_base = new BookstoreDB(); // APi to comm with the server
+
+        // Add the new object to the Purchase collection
+        data_base.Purchases.InsertOnSubmit(transact);
+
+
+        // Submit the Changes to the database. 
+        try
+        {
+            data_base.SubmitChanges();
+            return true;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+
+        return false; // not successful. 
+
+    }
+
+    /**
+  * @description Inserts Rentals into purchases of the user. 
+  * @param Rentals tuple of transaction
+  * @return true when insertion completed.
+  * 
+  */
+    public bool InsertRentals(Rentals transact)
+    {
+        data_base = new BookstoreDB(); // APi to comm with the server
+
+        // Add the new object to the Purchase collection
+        data_base.Rentals.InsertOnSubmit(transact);
+
+
+        // Submit the Changes to the database. 
+        try
+        {
+            data_base.SubmitChanges();
+            return true;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+
+        return false; // not successful.
+
+    }
+
+  
 }
 
-[Table]
-class Employees
-{
-    [Column(Name = "ID")]
-    public int ID;
-    [Column(Name = "Name")]
-    public string Name;
-    [Column(Name = "ContactInfo")]
-    public string ContactInfo;
-    [Column(Name = "YearJoined")]
-    public int YearJoined;
-}
 
-[Table]
-class Books
-{
-    [Column(Name = "ISBN")]
-    public int ISBN;
-    [Column(Name = "Title")]
-    public string Title;
-    [Column(Name = "Author")]
-    public string Author;
-    [Column(Name = "Genre")]
-    public string Genre;
-    [Column(Name = "YearPublished")]
-    public int YearPublished;
-    [Column(Name = "Publisher")]
-    public string Publisher;
-}
 
-[Table]
-class Inventory
-{
-    [Column(Name = "ID")]
-    public int ID;
-    [Column(Name = "ISBN")]
-    public int ISBN;
-    [Column(Name = "CopyNumber")]
-    public int CopyNumber;
-    [Column(Name = "Condition")]
-    public string Condition;
-}
-
-[Table]
-class Prices
-{
-    [Column(Name = "ID")]
-    public int ID;
-    [Column(Name = "ISBN")]
-    public int ISBN;
-    [Column(Name = "Condition")]
-    public string Condition;
-    [Column(Name = "PurchasePrice")]
-    public decimal PurchasePrice;
-    [Column(Name = "RentalPrice")]
-    public decimal RentalPrice;
-    [Column(Name = "LateFee")]
-    public decimal LateFee;
-}
-
-[Table]
-class Sales
-{
-    [Column(Name = "ID")]
-    public int ID;
-    [Column(Name = "CustomerID")]
-    public int CustomerID;
-    [Column(Name = "EmployeeID")]
-    public int EmployeeID;
-    [Column(Name = "Date_Time")]
-    public DateTime Date_Time;
-    [Column(Name = "InventoryID")]
-    public int InventoryID;
-    [Column(Name = "Discount")]
-    public bool Discount;
-}
-
-[Table]
-class Rentals
-{
-    [Column(Name = "ID")]
-    public int ID;
-    [Column(Name = "CustomerID")]
-    public int CustomerID;
-    [Column(Name = "EmployeeID")]
-    public int EmployeeID;
-    [Column(Name = "Date_Time")]
-    public DateTime Date_Time;
-    [Column(Name = "InventoryID")]
-    public int InventoryID;
-    [Column(Name = "DateDue")]
-    public DateTime DateDue;
-    [Column(Name = "DateReturned")]
-    public DateTime DateReturned;
-    [Column(Name = "Discount")]
-    public bool Discount;
-}
-
-[Table]
-class Purchases
-{
-    [Column(Name = "ID")]
-    public int ID;
-    [Column(Name = "CustomerID")]
-    public int CustomerID;
-    [Column(Name = "EmployeeID")]
-    public int EmployeeID;
-    [Column(Name = "Date_Time")]
-    public DateTime Date_Time;
-    [Column(Name = "ISBN")]
-    public int ISBN;
-    [Column(Name = "Condition")]
-    public string Condition;
-}
-
-class BookstoreDB : DataContext
-{
-    public Table<Customers> Customers;
-    public Table<Employees> Employees;
-    public Table<Books> Books;
-    public Table<Inventory> Inventory;
-    public Table<Prices> Prices;
-    public Table<Sales> Sales;
-    public Table<Rentals> Rentals;
-    public Table<Purchases> Purchases;
-
-    public BookstoreDB() : base(@"Data Source=CS1;Initial Catalog=bookstore;Integrated Security=True") { }
-}
 
 class Bookstore
 {
-    static IQueryable getBookstoreDB(BookstoreDB bsdb)
+    /**
+     * @Description Enables the User to log in before accessing the database for security purposes | create a new user and insert the value into the server. 
+     * @param takes in the API to communicate with the database. 
+     * @return a Customer datatype
+     * */
+    static Customers Login(BookstoreDB bsdb)
     {
-        var db = from book in bsdb.Books
-                 join item in bsdb.Inventory on book.ISBN equals item.ISBN 
-                 join row in bsdb.Prices on 
-                 new { book.ISBN, item.Condition }
-                 equals new { row.ISBN, row.Condition }
-                 select new { Title = book.Title,
-                              Author = book.Author,
-                              Genre = book.Genre, Year = book.YearPublished,
-                              Condition = item.Condition,
-                              PurchasePrice = row.PurchasePrice,
-                              RentalPrice = row.RentalPrice };
-        return db;
-    }
+        string result = new string('-', 110); // for indenting purposes.
+        Console.WriteLine(result);
+        // Display a Welcome page to the user to log in. 
+        string userID;
+        Console.WriteLine("Hello Welcome to Glass BookStore... Log in to proceed/n");
+        Console.Write("Enter your Unique bookstore ID...");
+        userID = Console.ReadLine(); //
+        bool done = false; // used to create a new customer. 
 
-    static void Startup(BookstoreDB bsdb)
-    // On initial Start of the Program new Book  are sh.
-    {
-        var db = from book in bsdb.Books
-                 join item in bsdb.Inventory on book.ISBN equals item.ISBN
-                 join row in bsdb.Prices on
-                 new { book.ISBN, item.Condition }
-                 equals new { row.ISBN, row.Condition }
-                 select new { Title = book.Title,
-                              Author = book.Author,
-                              Genre = book.Genre, Year = book.YearPublished,
-                              Condition = item.Condition,
-                              PurchasePrice = row.PurchasePrice,
-                              RentalPrice = row.RentalPrice };
+        Customers user_data;
 
-        NumberFormatInfo setPrecision = new NumberFormatInfo();
+        // Query to get Customer data from the table. 
+        var data = from users in bsdb.Customers
+                   select new { iD = users.ID, name = users.Name, cinfo = users.ContactInfo, yr = users.YearJoined };
 
-        setPrecision.NumberDecimalDigits = 2;
-
-        Console.WriteLine("Startup:");  // Write UI manipulated code from source.
-        Console.WriteLine("Title\tAuthor\tGenre\tYear\tCondition\tPurchasePrice\tRentalPrice");
-        foreach (var book in db) // typecast error here? not sure which is being cast as which
+        // Find the User in the table. 
+        foreach (var p in data)
         {
-            Console.WriteLine(book.Title + "\t" + book.Author + "\t" + book.Genre + "\t" + book.Year + "\t" + book.Condition + "\t" + book.PurchasePrice + "\t" + book.RentalPrice);
+            if (p.iD.ToString() == userID) // equality check to see if the user exists.
+            { 
+
+                // if it does obtain the info of the user. 
+                user_data = new Customers
+                {
+                    ID = p.iD,
+                    Name = p.name,
+                    ContactInfo = p.cinfo,
+                    YearJoined = p.yr
+                };
+
+                done = true;
+                return user_data; // return the Customer found
+            }
         }
+
+        // if user data is not available. A new customer data is created.
+        if (!done)
+        {
+            Console.Write(" Hello, it seems your data is not found in the server. We will let you create one\n");
+            int iD, yr = 2021;
+            string name, info;
+
+            // iD
+            Console.Write("Enter your ID: ");
+            string temp = Console.ReadLine();
+            iD = Convert.ToInt32(temp);
+
+            // name
+            Console.Write("Enter your name: ");
+            name = Console.ReadLine();
+
+            // Contact Info. 
+            Console.Write("Enter your Phone number: ");
+            info = Console.ReadLine();
+
+            user_data = new Customers { /*ID = iD*/ Name = name, YearJoined = yr, ContactInfo = info };
+
+            // Perform the Insertion Operation. 
+            Utility send = new Utility();
+
+            if (send.InsertCustomer(user_data)) { return user_data;  } // insert the data to the database.
+        }
+
+        Console.WriteLine(result);
+
+        Console.Clear(); // clear the screen.
+
+        return null; // if it fails
+
     }
+
+    /**
+     * @description This query displays to the user the books in the inventory of the table. 
+     * @param bsdb Object that handles the communication between the program and the database. 
+     * @param user gets specific information of the user to display the information to. 
+     */
+    static int Startup(BookstoreDB bsdb, Customers user)
+    // On initial Start of the Program new Book  are shown.
+    {
+        Console.WriteLine(" Hello..." + user.Name + "\n");
+        Console.WriteLine(" These are the books currently in the Inventory\t");
+
+        // Query to Get the Books currently in the inventory of the bookstore. 
+        var data_books = (from books in bsdb.Books
+                          join items in bsdb.Inventory
+                          on books.ISBN equals items.ISBN
+                          join prices in bsdb.Prices on
+                          new { books.ISBN, items.Condition }
+                          equals new { prices.ISBN, prices.Condition }
+                          select new { iSBN = books.ISBN, title = books.Title, author = books.Author, yr = books.YearPublished, genre = books.Genre, price = prices.PurchasePrice, rental=prices.RentalPrice, condition = prices.Condition });
+        //
+
+        // Precision setters. 
+        NumberFormatInfo setPrecision = new NumberFormatInfo();
+        setPrecision.NumberDecimalDigits = 2;
+        string result = new string('-', 115); // for indenting purposes.
+
+        { // Formatting gimmick to handle drawing a neat table to show to the user. 
+            Console.WriteLine(result);
+            Console.WriteLine(String.Format("|{0,5}|{1,30}|{2,25}|{3,3}|{4,20}|{5,5}|{6,5}|{7,6}|", "ISBN", "Title", "Author", "Year", "Genre", "Price","Rental", "Condition"));
+            Console.WriteLine(result);
+
+            foreach (var p in data_books)
+            {
+                // Display the Data from the server to the user. 
+                Console.WriteLine(String.Format("|{0,5}|{1,30}|{2,25}|{3,3}|{4,20}|{5,5}|{6,5}|{7,10}|", p.iSBN, p.title, p.author, p.yr, p.genre, Math.Round(p.price, 2), Math.Round(p.rental,2), p.condition));
+
+
+
+            }
+            Console.WriteLine(result);
+        }
+
+        // Show the Options here later on. 
+        Console.WriteLine("1: Buy a Book 2: Rent a Book 3: ");
+        Console.Write("Press a number to know what you want to do today \n");
+        int input = Convert.ToInt32((Console.ReadLine()));
+
+
+        return input; 
+    }
+
+
+    /**
+     * @description This function handles the purchase of a book by the user. 
+     * @param bsdb APi to communicate with the SQL server
+     * @param user Personalized Customer who's purchasing a book his info is used to generate transactions and receipts. 
+     * @return true when the user is done shopping. 
+     * 
+     */
+     static bool BuyBook(BookstoreDB bsdb, Customers user, Employees job)
+    {
+        // Console.WriteLine("Foo");
+        // Create a loop to allow multiple buying as well as generate transactions
+
+        // variables to be used 
+        int done = 0;
+        string leave; // used to leave the loop of the program. 
+        Utility trxt = new Utility(); // for performing insertion operations. 
+        Purchases buy = new Purchases();
+
+
+        do
+        {
+
+            Console.Write("Enter the ISBN of the Book you want to buy from the Table above. <Check your input correctly> -->  ");
+            string input_ISBN = Console.ReadLine(); // get the user's ISBN choice. 
+
+            Console.Write("Enter the condition you want the book to be in. <Check your input correctly> -->");
+            string input_cdtn = Console.ReadLine(); // read the conditon of the book.
+
+            // DO: Perform a search on the database with the ISBN key
+
+            // Query to Seach the inventory for a specific book by using the ISBN as index. 
+            var data_books = (from books in bsdb.Books
+                              join items in bsdb.Inventory on books.ISBN equals items.ISBN 
+                              where books.ISBN == Convert.ToInt32(input_ISBN) && items.Condition==input_cdtn
+                              select new { iSBN = books.ISBN, title = books.Title, author = books.Author, yr = books.YearPublished, genre = books.Genre, publisher = books.ISBN, cdtion=items.Condition }
+                );
+
+            // Display the tuple to the user. 
+            foreach (var p in data_books)
+            {
+                Console.WriteLine(String.Format("|{0,5}|{1,30}|{2,25}|{3,3}|{4,20}|", p.iSBN, p.title, p.author, p.yr, p.genre));
+            }
+
+            Console.WriteLine("Is that the correct book? (y/n): ");
+            leave = Console.ReadLine(); // take input. 
+            DateTime today = DateTime.Today; //Get the current date the book's purchase was made.
+
+            if( leave == "y")
+            {
+                foreach (var p in data_books) {
+
+                    // Create a Purchase Object to insert appropriate data into it. 
+                    buy = new Purchases
+                    {
+                        ISBN = p.iSBN,
+                        CustomerID = user.ID,
+                        EmployeeID = job.ID,
+                        Date_Time = today,
+                        Condition = p.cdtion
+
+                    };
+                 }
+
+                /* Insert into Purchases*/
+                trxt.InsertPurchases(buy);
+
+              
+                done = 1;
+
+            }
+
+
+            else { done = 0;} // compute if the user is satisfied with the results. 
+
+        } while (done != 1);
+
+        return true;  
+
+    }
+
+    /**
+ * @description This function handles the rental of a book by the user. 
+ * @param bsdb APi to communicate with the SQL server
+ * @param user Personalized Customer who's purchasing a book his info is used to generate transactions and receipts. 
+ * @param Employee who handles the rental.
+ * @return true when the user is done shopping. 
+ * 
+ */
+    static bool rentABook(BookstoreDB bsdb, Customers user, Employees job)
+    {
+        // Console.WriteLine("Foo");
+        // Create a loop to allow multiple buying as well as generate transactions
+
+        // variables to be used 
+        int done = 0;
+        string leave; // used to leave the loop of the program. 
+        Utility trxt = new Utility(); // for performing insertion operations. 
+        Rentals buy = new Rentals();
+
+
+        do
+        {
+
+            Console.Write("Enter the ISBN of the Book you want to Rent from the Table above. <Check your input correctly> -->  ");
+            string input_ISBN = Console.ReadLine(); // get the user's ISBN choice. 
+
+            Console.Write("Enter the condition you want the book to be in. <Check your input correctly> -->");
+            string input_cdtn = Console.ReadLine(); // read the conditon of the book.
+
+            // DO: Perform a search on the database with the ISBN key
+
+            // Query to Seach the inventory for a specific book by using the ISBN as index. 
+            var data_books = (from books in bsdb.Books
+                              join items in bsdb.Inventory on books.ISBN equals items.ISBN
+                              join prices in bsdb.Prices on items.ISBN equals prices.ISBN
+                              where books.ISBN == Convert.ToInt32(input_ISBN) && items.Condition == input_cdtn && items.Condition == prices.Condition
+                              select new {iSBN = books.ISBN, ivID = items.ID, title = books.Title, author = books.Author, yr = books.YearPublished, genre = books.Genre, publisher = books.ISBN, cdtion = items.Condition, Ltfee = prices.LateFee, Rtpr = prices.RentalPrice, fee=prices.LateFee}
+                );
+
+            // Display the tuple to the user. 
+            foreach (var p in data_books)
+            {
+                Console.WriteLine(String.Format("|{0,5}|{1,30}|{2,25}|{3,3}|{4,20}|{5,10}|{6,5}|", p.iSBN, p.title, p.author, p.yr, p.genre, p.Rtpr, p.cdtion));
+            }
+
+            Console.WriteLine("Is that the correct book? (y/n): ");
+            leave = Console.ReadLine(); // take input. 
+            DateTime today = DateTime.Today; //Get the current date the book's purchase was made.
+
+            if (leave == "y")
+            {
+                foreach (var p in data_books)
+                {
+
+                    // Create a Purchase Object to insert appropriate data into it. 
+                    buy = new Rentals
+                    {
+                        InventoryID = p.ivID,
+                        CustomerID = user.ID,
+                        EmployeeID = job.ID,
+                        Date_Time = today,
+                        DateDue = DateTime.Now.AddDays(10),
+                        DateReturned = today,
+                        Discount =false,
+                        
+                    };
+                }
+
+                /* Insert into Rentals*/
+                trxt.InsertRentals(buy);
+
+                done = 1;
+            }
+
+            else { done = 0; } // compute if the user is satisfied with the results. 
+
+        } while (done != 1);
+
+        return true; // when done. 
+    }
+      
     /*
-    static void Query02(var bsdb)
-    // List the maximum, minimum, and average target level of the products.
-    // ***NOTE: I'm working in SQL Server, in which the Product table does not have the Target Level attribute.
-    //          Instead, I'll use the Reorder Level.
-    {
-        BookstoreDB bsdb = new BookstoreDB();
-
-        var maxReorderLevel = bsdb.Products.Max(p => p.ReorderLevel);
-
-        var minReorderLevel = bsdb.Products.Min(p => p.ReorderLevel);
-
-        var avgReorderLevel = bsdb.Products.Average(p => p.ReorderLevel);
-
-        Console.WriteLine("Query02:");
-
-        Console.WriteLine("Max. Reorder Level: " + maxReorderLevel);
-
-        Console.WriteLine("Min. Reorder Level: " + minReorderLevel);
-
-        Console.WriteLine("Avg. Reorder Level: " + avgReorderLevel);
-    }
-
-    static void Query03(var bsdb) ///
-    // How many products are currently discontinued?
-    {
-        BookstoreDB bsdb = new BookstoreDB();
-
-        var discontinuedProducts = from product in bsdb.Products
-                                    where product.Discontinued == true
-                                    select new { ProductName = product.ProductName };
-
-        var DPCount = discontinuedProducts.Count();
-
-        Console.WriteLine("Query03:");
-        Console.WriteLine(DPCount + " products are currently discontinued."); 
-    }
-
-    static void Query04(var bsdb)
-    // List all Products whose product name contains the word ‘dried’.
-    {
-        BookstoreDB bsdb = new BookstoreDB();
-
-        var driedProducts = from product in bsdb.Products
-                            where product.ProductName.Contains("dried")
-                            select new { ProductName = product.ProductName };
-
-        Console.WriteLine("Query04:");
-
-        foreach (var p in driedProducts)
-            Console.WriteLine("Product: " + p.ProductName);
-    }
-
-    static void Query05(var bsdb)
-    // List all products that are beverages and are not discontinued. 
-    {
-        BookstoreDB bsdb = new BookstoreDB();
-
-        var availableBeverages = from product in bsdb.Products
-                                    from category in bsdb.Categories
-                                    where product.CategoryID == category.CategoryID && category.CategoryName == "Beverages" && product.Discontinued == false
-                                    select new { ProductName = product.ProductName };
-
-        Console.WriteLine("Query05:");
-
-        foreach (var b in availableBeverages)
-            Console.WriteLine("Available Beverage: " + b.ProductName);
-    }
-
-    static void Query06(var bsdb)
-    // List the names of shippers who shipped orders where the shipping fee > 100.
-    {
-        BookstoreDB bsdb = new BookstoreDB();
-
-        var shipInfo = (from order in bsdb.Orders
-                        from shipper in bsdb.Shippers
-                        where order.ShipVia == shipper.ShipperID && order.Freight > 100 && order.ShippedDate != null
-                        select new { Company = shipper.CompanyName }).Distinct();
-
-        Console.WriteLine("Query06:");
-
-        foreach (var s in shipInfo)
-            Console.WriteLine("Company: " + s.Company);
-    }
-
-    static void Query07(var bsdb)
-    // List the names of all employees and their job title.
-    {
-        BookstoreDB bsdb = new BookstoreDB();
-
-        var employeePositions = from employee in bsdb.Employees
-                                select new { FirstName = employee.FirstName, LastName = employee.LastName, Title = employee.Title };
-
-        Console.WriteLine("Query07:");
-
-        foreach (var e in employeePositions)
-        {
-            Console.Write("Name: " + e.FirstName + ' ' + e.LastName);
-            Console.Write(", Title: " + e.Title);
-            Console.Write('\n');
-        }
-    }
-
-    static void Query08(var bsdb)
-    // List the ship date for all Orders, and if there is an employee assigned to the order, list the employee’s name.
-    {
-        BookstoreDB bsdb = new BookstoreDB();
-
-        var orderInfo = from order in bsdb.Orders
-                        from employee in bsdb.Employees
-                        where order.ShippedDate != null && order.EmployeeID == employee.EmployeeID
-                        select new { OrderID = order.OrderID, ShippedDate = (DateTime?)order.ShippedDate, FirstName = employee.FirstName, LastName = employee.LastName };
-
-        Console.WriteLine("Query08:");
-
-        foreach (var o in orderInfo)
-        {
-            Console.Write("Order ID: " + o.OrderID);
-            Console.Write(", Ship Date: " + o.ShippedDate);
-            if (o.FirstName != null && o.LastName != null)
-                Console.Write(", Employee: " + o.FirstName + ' ' + o.LastName);
-            Console.Write('\n');
-        }
-    }
-
-    static void Query09(var bsdb)
-    // List the maximum, minimum, and average prices for all products.
-    {
-        BookstoreDB bsdb = new BookstoreDB();
-
-        var maxPrice = bsdb.Products.Max(p => p.UnitPrice);
-
-        var minPrice = bsdb.Products.Min(p => p.UnitPrice);
-
-        var avgPrice = bsdb.Products.Average(p => p.UnitPrice);
-
-        NumberFormatInfo setPrecision = new NumberFormatInfo();
-
-        setPrecision.NumberDecimalDigits = 2;
-
-        Console.WriteLine("Query09:");
-
-        Console.WriteLine("Max. Price: $" + maxPrice.ToString("N", setPrecision));
-
-        Console.WriteLine("Min. Price: $" + minPrice.ToString("N", setPrecision));
-
-        Console.WriteLine("Avg. Price: $" + avgPrice.ToString("N", setPrecision));
-    }
-
+   
     static void Query10(var bsdb)
     // List each product category, and for each category, list the maximum, minimum, and average prices for products in that category.
     {
@@ -416,124 +655,242 @@ class Bookstore
         }
     }
     */
+
+    /**
+     * @description Get an Employee from the user by specifying the ID. 
+     * @return data of type Employee
+     */
+     static Employees getEmployee(BookstoreDB bsdb) 
+    {
+
+        string result = new string('-', 110); // for indenting purposes.
+        Console.WriteLine(result);
+        // Display a Welcome page to the user to log in. 
+        string userID;
+        Console.WriteLine("Hello Welcome to Glass BookStore...n");
+        Console.Write("Enter your Employee ID...");
+        userID = Console.ReadLine(); //
+        bool done = false; // used to create a new customer. 
+
+        Employees user_data;
+
+        // Query to get Customer data from the table. 
+        var data = from users in bsdb.Employees
+                   select new { iD = users.ID, name = users.Name, cinfo = users.ContactInfo, yr = users.YearJoined };
+
+        // Find the User in the table. 
+        foreach (var p in data)
+        {
+            if (p.iD.ToString() == userID) // equality check to see if the employee exists.
+            {
+
+                // if it does obtain the info of the user. 
+                user_data = new Employees
+                {
+                    ID = p.iD,
+                    Name = p.name,
+                    ContactInfo = p.cinfo,
+                    YearJoined = p.yr
+                };
+
+                done = true;
+                return user_data; // return the Employees found
+            }
+        }
+
+        // if user data is not available. A new customer data is created.
+        if (!done)
+        {
+            Console.Write(" Hello, it seems your data is not found in the server. We will let you create one\n");
+            int iD, yr = 2021;
+            string name, info;
+
+            // iD
+            Console.Write("Enter your ID: ");
+            string temp = Console.ReadLine();
+            iD = Convert.ToInt32(temp);
+
+            // name
+            Console.Write("Enter your name: ");
+            name = Console.ReadLine();
+
+            // Contact Info. 
+            Console.Write("Enter your Phone number: ");
+            info = Console.ReadLine();
+
+            user_data = new Employees { /*ID = iD*/ Name = name, YearJoined = yr, ContactInfo = info };
+
+            // Perform the Insertion Operation. 
+            Utility send = new Utility();
+
+            if (send.InsertEmployees(user_data)) { return user_data; } // insert the data to the database.
+        }
+
+        Console.WriteLine(result);
+
+        Console.Clear(); // clear the screen.
+
+        return null; // if it fails
+
+
+    }
     static void Main(string[] args)
     {
         BookstoreDB bsdb = new BookstoreDB();
-        IQueryable inventory = getBookstoreDB(bsdb);
+
+        // Get an employee
+        Employees worker = getEmployee(bsdb); // get employee details.
+
+        Utility inst_emp = new Utility(); // employees. 
+        //inst_emp.InsertEmployees(worker);
+
+
+        // IQueryable inventory = getBookstoreDB(bsdb);
         // TODO: Login procedure
-        Startup(bsdb);
-        string input = null;
-        do
+        // Startup(bsdb);
+
+        Customers cs = Login(bsdb); // Log the User trying to access the database into the system.
+
+        // Case : Perform the Startup of the Program. During the Startup ask the User what he/she wants to do. 
+
+
+        /////////// Loop to Run the Homescreen of the Main Program. 
+        int choise = 0; 
+        choise = Startup(bsdb, cs); // Home Screen sort of the BookStore. 
+
+         switch(choise)
         {
-            startup:    
-            if (input == null) // Initial loop on login
-            {
-                Console.WriteLine("Enter 's' to sort by attribute. Enter 't' to make a transaction. Enter nothing to log out.");
-            }
-            else if (input == "s" || input == "S")
-            {
-                Console.WriteLine("Enter 't' to sort by Title. Enter 'a' to sort by Author. Enter 'y' to sort by Year. Enter 'g' to sort by Genre. Enter nothing to log out.");
-                sorting:
-                input = Console.ReadLine();
-                if (input == "t" || input == "T")
-                {
-                    var db = from book in bsdb.Books
-                           orderby book.Title
-                           select book;
-                    Console.WriteLine("Title\tAuthor\tYear\tGenre");
-                    foreach (var book in db)
-                    {
-                        Console.WriteLine(book.Title + "\t" + book.Author + "\t" + book.YearPublished + "\t" + book.Genre);
-                    }
-                    input = null;
-                    goto startup;
-                }
-                else if (input == "a" || input == "A")
-                {
-                    var db = from book in bsdb.Books
-                           orderby book.Author
-                           select book;
-                    Console.WriteLine("Title\tAuthor\tYear\tGenre");
-                    foreach (var book in db)
-                    {
-                        Console.WriteLine(book.Title + "\t" + book.Author + "\t" + book.YearPublished + "\t" + book.Genre);
-                    }
-                    input = null;
-                    goto startup;
-                }
-                else if (input == "y" || input == "Y")
-                {
-                    var db = from book in bsdb.Books
-                           orderby book.YearPublished
-                           select book;
-                    Console.WriteLine("Title\tAuthor\tYear\tGenre");
-                    foreach (var book in db)
-                    {
-                        Console.WriteLine(book.Title + "\t" + book.Author + "\t" + book.YearPublished + "\t" + book.Genre);
-                    }
-                    input = null;
-                    goto startup;
-                }
-                else if (input == "g" || input == "G")
-                {
-                    var db = from book in bsdb.Books
-                           orderby book.Genre
-                           select book;
-                    Console.WriteLine("Title\tAuthor\tYear\tGenre");
-                    foreach (var book in db)
-                    {
-                        Console.WriteLine(book.Title + "\t" + book.Author + "\t" + book.YearPublished + "\t" + book.Genre);
-                    }
-                    input = null;
-                    goto startup;
-                }
-                else if (input == "")
-                {
-                    break; // exit if-cluster and outer do-while
-                }
-                else
-                {
-                    Console.WriteLine("Invalid input. Enter 't' to sort by Title. Enter 'a' to sort by Author. Enter 'y' to sort by Year. Enter 'g' to sort by Genre. Enter nothing to log out.");
-                    goto sorting;
-                }
+            case 1:
+                BuyBook(bsdb, cs, worker);
+                break;
 
-            }
-            else if (input == "t" || input == "T")
+            case 2:
+                rentABook(bsdb, cs, worker);
+                break;
+            default:
+                Console.WriteLine("No input selected");
+                break; 
+        }
+
+        /////////////
+
+        /*
+            string input = null;
+            do
             {
-                Console.WriteLine("Enter 'p' to reserve a purchase. Enter 'r' to reserve a rental. Enter 's' to offer a sale. Enter nothing to log out.");
-                transaction:
-                input = Console.ReadLine();
-                if (input == "p" || input == "P")
+            startup:
+                if (input == null) // Initial loop on login
                 {
-                    Console.WriteLine("Enter your selected titles separated by commas:");
-
-                    // TODO: ^
-                }
-                else if (input == "r" || input == "R")
-                {
-                    Console.WriteLine("Enter your selected titles separated by commas:");
-
-                    // TODO: ^
+                    Console.WriteLine("Enter 's' to sort by attribute. Enter 't' to make a transaction. Enter nothing to log out.");
                 }
                 else if (input == "s" || input == "S")
                 {
-                    // TODO: Display user's collection; will probably be empty on login (should we store it clientside in main?); prompt if user collection is empty (goto transaction)
+                    Console.WriteLine("Enter 't' to sort by Title. Enter 'a' to sort by Author. Enter 'y' to sort by Year. Enter 'g' to sort by Genre. Enter nothing to log out.");
+                sorting:
+                    input = Console.ReadLine();
+                    if (input == "t" || input == "T")
+                    {
+                        var db = from book in bsdb.Books
+                                 orderby book.Title
+                                 select book;
+                        Console.WriteLine("Title\tAuthor\tYear\tGenre");
+                        foreach (var book in db)
+                        {
+                            Console.WriteLine(book.Title + "\t" + book.Author + "\t" + book.YearPublished + "\t" + book.Genre);
+                        }
+                        input = null;
+                        goto startup;
+                    }
+                    else if (input == "a" || input == "A")
+                    {
+                        var db = from book in bsdb.Books
+                                 orderby book.Author
+                                 select book;
+                        Console.WriteLine("Title\tAuthor\tYear\tGenre");
+                        foreach (var book in db)
+                        {
+                            Console.WriteLine(book.Title + "\t" + book.Author + "\t" + book.YearPublished + "\t" + book.Genre);
+                        }
+                        input = null;
+                        goto startup;
+                    }
+                    else if (input == "y" || input == "Y")
+                    {
+                        var db = from book in bsdb.Books
+                                 orderby book.YearPublished
+                                 select book;
+                        Console.WriteLine("Title\tAuthor\tYear\tGenre");
+                        foreach (var book in db)
+                        {
+                            Console.WriteLine(book.Title + "\t" + book.Author + "\t" + book.YearPublished + "\t" + book.Genre);
+                        }
+                        input = null;
+                        goto startup;
+                    }
+                    else if (input == "g" || input == "G")
+                    {
+                        var db = from book in bsdb.Books
+                                 orderby book.Genre
+                                 select book;
+                        Console.WriteLine("Title\tAuthor\tYear\tGenre");
+                        foreach (var book in db)
+                        {
+                            Console.WriteLine(book.Title + "\t" + book.Author + "\t" + book.YearPublished + "\t" + book.Genre);
+                        }
+                        input = null;
+                        goto startup;
+                    }
+                    else if (input == "")
+                    {
+                        break; // exit if-cluster and outer do-while
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid input. Enter 't' to sort by Title. Enter 'a' to sort by Author. Enter 'y' to sort by Year. Enter 'g' to sort by Genre. Enter nothing to log out.");
+                        goto sorting;
+                    }
+
                 }
-                else if (input == "")
+                else if (input == "t" || input == "T")
                 {
-                    break; // exit if-cluster and outer do-while
+                    Console.WriteLine("Enter 'p' to reserve a purchase. Enter 'r' to reserve a rental. Enter 's' to offer a sale. Enter nothing to log out.");
+                transaction:
+                    input = Console.ReadLine();
+                    if (input == "p" || input == "P")
+                    {
+                        Console.WriteLine("Enter your selected titles separated by commas:");
+
+                        // TODO: ^
+                    }
+                    else if (input == "r" || input == "R")
+                    {
+                        Console.WriteLine("Enter your selected titles separated by commas:");
+
+                        // TODO: ^
+                    }
+                    else if (input == "s" || input == "S")
+                    {
+                        // TODO: Display user's collection; will probably be empty on login (should we store it clientside in main?); prompt if user collection is empty (goto transaction)
+                    }
+                    else if (input == "")
+                    {
+                        break; // exit if-cluster and outer do-while
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid input. Enter 'p' to reserve a purchase. Enter 'r' to reserve a rental. Enter 's' to offer a sale. Enter nothing to log out.");
+                        goto transaction;
+                    }
                 }
                 else
                 {
-                    Console.WriteLine("Invalid input. Enter 'p' to reserve a purchase. Enter 'r' to reserve a rental. Enter 's' to offer a sale. Enter nothing to log out.");
-                    goto transaction;
+                    Console.WriteLine("Invalid input. Enter 's' to sort by attribute. Enter 't' to make a transaction. Enter nothing to log out.");
                 }
-            }
-            else
-            {
-                Console.WriteLine("Invalid input. Enter 's' to sort by attribute. Enter 't' to make a transaction. Enter nothing to log out.");
-            }
-            input = Console.ReadLine();
-        } while (input != "");
+                input = Console.ReadLine();
+            } while (input != "");
+        }
+
+        */
     }
 }
+

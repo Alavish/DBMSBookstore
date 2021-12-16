@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqEx1", "LinqEx1\LinqEx1.csproj", "{37FAE816-CE58-4796-A81B-E8E7D32D8D6F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0CBD7B0D-FD7A-42AB-A79A-AA1E5198D95C}"
+	ProjectSection(SolutionItems) = preProject
+		utilities.cs = utilities.cs
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
